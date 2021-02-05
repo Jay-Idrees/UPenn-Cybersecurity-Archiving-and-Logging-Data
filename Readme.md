@@ -146,12 +146,16 @@ The testenvir folder contains the folder called patient. Then I have initially b
     - `ls -lat` this mill show the hidden files as well as display as modified by time
 - Run the python script
 
-- `python wildpwn.py tar .` Running the python script. This . is important
+- `python wildpwn.py tar .` Running the python script. This . is important. It is telling the script to create malacious files to listen for the tar command
+- The tar command must be run from the folder where the file is 
 - `ls -lat` `cd .cache` `ls -lat` in sequence
 - `./.cachefile` running the .cachefile. Running this malacious script you can switch to the root user
 - `visudo` to add jane to sudoers and eliminate the need for pw - that way you do not have to steal the password. `jane   ALL=(ALL) NOPASSWD:ALL`
 - `su jane`
 - `sudo -l` you cna open shadow file, if so then you have successfully converted Jane to a super user
+- `rm -r ~/Documents/ExploitTar`
+
+- A software `tripwire` can alert you when users download wildpwn or when backup creat files like .cache
 
 ### Archiving all the files and folders in the current directory
 
@@ -178,17 +182,16 @@ However this command is dangerous as it has loopholes for the hackers to exmploi
 
 **Running a python script**
 
-`python wildpwn.py tar`
+- `python wildpwn.py tar`
 
 
 
-
-    ## Cron Command for automation of Tasks
-
-    - `crontab -l`
-    - `crontab -e`
-    - `systemctl status cron`
-    - `m h  dom mon dow   command`  as _minute_, _hour_, _day of month_, _month of year_, and _day of week_
+## Cron Command for automation of Tasks
+- Crontab is Cron table
+ - `crontab -l` shows lists of scheduled tasks. Usually its a list of when to run a certain timed script
+ - `crontab -e` allows editing of the cron tab
+ - `systemctl status cron`
+ - `m h  dom mon dow   command`  as _minute_, _hour_, _day of month_, _month of year_, and _day of week_
 
  - `0 23 * * 6     rm ~/Downloads/*`
  
