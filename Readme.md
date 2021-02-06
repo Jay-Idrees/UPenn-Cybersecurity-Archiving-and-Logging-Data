@@ -9,6 +9,8 @@ I am writing this readme to reinforce and document things I leant during the Uni
 - `ls -l admit discharge` displays the files inside and the permissions of the folders
 - `ls -lat` here lat are instructions where `l` list of files, `a` displays entries starting with `.` means also shows hidden files and folders and `t` Sort by time modified. 
 
+- `sudo mkdir -p /usr/share/{doctors,patients,treatments}` Creating a parent and child directory in a single command by using `-p` option
+
 ## `tar` for full and incremental backup
 
 `tar [option(s)] [archive_name] [objects_to_archive]`
@@ -187,13 +189,24 @@ However this command is dangerous as it has loopholes for the hackers to exmploi
 
 
 ## Cron Command for automation of Tasks
+
+Cron jobs run under the same permissions as the user who ran them
+
 - Crontab is Cron table
  - `crontab -l` shows lists of scheduled tasks. Usually its a list of when to run a certain timed script
  - `crontab -e` allows editing of the cron tab
- - `systemctl status cron`
- - `m h  dom mon dow   command`  as _minute_, _hour_, _day of month_, _month of year_, and _day of week_
+ - `systemctl status cron` will show the current status of cron
+
+
+
+**Check crontabs in the system, including each user**
+- `sudo ls -l /var/spool/cron/crontabs`
+- `sudo ls -l /var/spool/cron/crontabs | grep sysadmin`
+ >Example
 
  - `0 23 * * 6     rm ~/Downloads/*`
+
+  - `m h  dom mon dow   command`  as _minute_, _hour_, _day of month_, _month of year_, and _day of week_
  
 - Minutes are specified with 0-59.
 
@@ -215,14 +228,14 @@ However this command is dangerous as it has loopholes for the hackers to exmploi
   - `0 6 * * 1-5     rm ~/Downloads/*`
 
 
-  - Use the following settings for this example: `0 6 * * 1-5`.
-
-  - Point out that this translates to **at 6AM sharp, every week, every month, (Mon - Fri)**.
+  -  `0 6 * * 1-5` translates to **at 6AM sharp, every week, every month, (Mon - Fri)**.
 
    - `sudo ls /var/spool/cron/crontabs`
     - `sudo tail /var/spool/cron/crontabs/instructor`
 
-    `sudo crontab -l` running crontab as root
+> The difference between root and user crontab
+
+-  `sudo crontab -l` running crontab as root - It is exact same as the `crontab -l`, but it runs with root privilidges and runs the risk of being a target from the hacker
 
 ## Making scripts
 
