@@ -11,7 +11,13 @@ I am writing this readme to reinforce and document things I leant during the Uni
 
 - `sudo mkdir -p /usr/share/{doctors,patients,treatments}` Creating a parent and child directory in a single command by using `-p` option
 
+- `cron` runs jobs as root so its a common target for hackers
+
+- You can remove a directory if you use `rm -rf folder_name`
+
 ## `tar` for full and incremental backup
+
+- Both the destination folder and the copied folder can be anywhere
 
 `tar [option(s)] [archive_name] [objects_to_archive]`
 
@@ -27,7 +33,7 @@ I am writing this readme to reinforce and document things I leant during the Uni
     -rw-r--r--  root/root       695  2019-07-05  21:09   /var/log/vboxadd-install.log
     ```
 
-    
+    - Gunzip is the format used by 
 `gunzip 2018-10-12-hurricane-backup.tar`
 
 `ls -l 10May2019-235536-0700.tar` This will show the permissions of the tar file
@@ -197,11 +203,34 @@ Cron jobs run under the same permissions as the user who ran them
  - `crontab -e` allows editing of the cron tab
  - `systemctl status cron` will show the current status of cron
 
+**Steps to a successful Cron task**
 
+1. Create directories where you want to move files too automatically
+- `sudo mkdir -p /usr/share/{doctors,patients,treatments}`
+
+2. Edit the crontab file
+- `crontab -e`
+
+3. Paste the commands you want at the bottom
+
+-Everyday of everyweek of everymonth at 6pm  move this file- User is usually a foldr inside the hoem directory. 
+- `0 18 * * * mv ~/Downloads/doctors*.docx /usr/share/doctors`
+-Every friday of the week of every month regardless of the day create this tar file the first path ~/Documents one is the location where tar file is created and the name- also telling to save as a zip file format in linux. The decond path ~/research is the path and the folder that we are asking to be tarred. You can specify the path to the folder to be tared
+-  `0 23 * * 5 tar cvf ~/Documents/MedicalArchive/Medical_backup.tar.gz ~/research`
+
+-  `5 23 * * 5 gzip -t Medical_backup.tar.gz >> /usr/share/backup_validation.txt`
+
+-  `0 4 * * * ls -l ~/Downloads > ~/Documents/Medical_files_list.txt`
+
+- `crontab -l` Finally you can check the status of the commands in the crontab file. Note that this will only show you the contents of the crontab that is tied to your username, not for other users
+- 
 
 **Check crontabs in the system, including each user**
-- `sudo ls -l /var/spool/cron/crontabs`
+- `sudo ls -l /var/spool/cron/crontabs` This will show all the permissions of the crontabs of individual users
 - `sudo ls -l /var/spool/cron/crontabs | grep sysadmin`
+
+
+
  >Example
 
  - `0 23 * * 6     rm ~/Downloads/*`
@@ -245,12 +274,14 @@ Cron jobs run under the same permissions as the user who ran them
 
  - `sudo ./cleanup_downloads.sh` executing the script after navigating to the directory where it is located
 
-
+`sudo ./<name of the script>.sh`
  ## user cron tabs vs system-wide cron directories
+
+- These daily weekly cron tasks are located in the etc folder and are usually run with root privilidges 
 
  - `less /etc/crontab` Inspecting crontab script
 
- - `/etc/cron.d`  This stores scripts that are run are run at custom times
+ - `/etc/cron.d`  This stores scripts that are run are run at custom times -Never directly edit this file, it can break cron
 
 - `/etc/cron.daily`
 
@@ -258,6 +289,7 @@ Cron jobs run under the same permissions as the user who ran them
 
 - `/etc/cron.monthly`
 
+- The above are the cron directories. We can move scripts to the 
 
 ## Automating the running of the system scans
 
