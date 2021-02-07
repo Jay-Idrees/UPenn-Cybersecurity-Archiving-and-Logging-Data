@@ -259,6 +259,12 @@ Cron jobs run under the same permissions as the user who ran them
 
   -  `0 6 * * 1-5` translates to **at 6AM sharp, every week, every month, (Mon - Fri)**.
 
+  - New Year's cron `59 23 31 12 *`
+
+  -  `*/10 * * * *`  Runs every 10th min
+
+  - `@weekly /home/sysadmin/Scripts/auto-update.sh` weekely system update
+
    - `sudo ls /var/spool/cron/crontabs`
     - `sudo tail /var/spool/cron/crontabs/instructor`
 
