@@ -270,12 +270,94 @@ Cron jobs run under the same permissions as the user who ran them
 
 - `nano cleanup_downloads.sh`
 
+- It is important that the script start with #!/bin/bash before pasting the script- otherwise there will be issues with running the script
+
 - `chmod +x cleanup_downloads.sh` Giving execuatable properties to the bash script
 
  - `sudo ./cleanup_downloads.sh` executing the script after navigating to the directory where it is located
 
 `sudo ./<name of the script>.sh`
  ## user cron tabs vs system-wide cron directories
+
+- Steps to performing the systemwide cron jobs
+
+1. Write bash scripts (below all the steps) e-g for scheduling weekly `updates` and `backup` in the cron.weekly folder
+
+2. Git the script file the power to be executed
+
+- `chmod -x backup.sh` and `chmod -x update.sh`
+
+3. Go to the directory where the scripts are
+
+4. Copy the scripts to the cron.weekly directory
+
+- `sudo cp backup.sh /etc/cron.weekly`
+
+- `sudo cp update.sh /etc/cron.weekly`
+
+
+- **Sample Scripts**
+
+- backup
+
+```
+#!/bin/bash
+
+# Create /var/backup if it doesn't exist
+mkdir -p /var/backup
+
+# Create new /var/backup/home.tar
+tar cvf /var/backup/home.tar /home
+
+# Moves the file `/var/backup/home.tar` to `/var/backup/home.MMDDYYYY.tar`.
+mv /var/backup/home.tar /var/backup/home.01012020.tar
+
+# Creates an archive of `/home`and saves it to `/var/backup/home.tar`.
+tar cvf /var/backup/system.tar /home 	
+
+# List all files in `/var/backup`, including file sizes, and save the output to `/var/backup/file_report.txt`.
+ls -lh /var/backup > /var/backup/file_report.txt
+
+# Print how much free memory your machine has left. Save this to a file called `/var/backup/disk_report.txt`.
+free -h > /var/backup/disk_report.txt
+```
+
+- update
+```
+#!/bin/bash
+
+# Ensure apt has all available updates
+apt update -y
+
+# Upgrade all installed packages
+apt upgrade -y
+
+# Install new packages, and uninstall any old packages that
+# must be removed to install them
+apt full-upgrade -y
+
+# Remove unused packages and their associated configuration files
+apt autoremove --purge -y
+
+# Bonus - Perform with a single line of code.
+apt update -y && apt upgrade -y && apt full-upgrade -y && apt-get autoremove --purge -y
+```
+
+- Lynis partial
+
+```
+lynis audit --tests-from-group malware,authentication,networking,storage,filesystems >> /tmp/lynis.partial_scan.log
+```
+
+- system
+
+```
+#!/bin/bash
+
+lynis audit system >> /tmp/lynis.system_scan.log
+```
+
+
 
 - These daily weekly cron tasks are located in the etc folder and are usually run with root privilidges 
 
