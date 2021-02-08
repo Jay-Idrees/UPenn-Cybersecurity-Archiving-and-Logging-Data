@@ -10,6 +10,25 @@ Save and submit the completed file for your homework submission.
 
 1. Command to **extract** the `TarDocs.tar` archive to the current directory:
 
+- After logging in at home/sysadmin
+- `mkdir Projects`
+
+- Downloaded the file TarDocs.tar from the following website:
+
+  - [TarDocs.tar](https://drive.google.com/a/2tor.com/file/d/1fRjFS1vOdS7yfKJgpJxR02_UxeT_qI_u/view?usp=sharing
+  
+- `mv /home/sysadmin/Downloads/TarDocs.tar /home/sysadmin/Projects` Moved this file to the Projects folder 
+
+- Checked `ls -l /home/sysadmin/Projects` which confirmed `-rw-rw-r-- 1 sysadmin sysadmin 1099806720 Feb  8 00:40 TarDocs.tar`
+
+
+- Then `cd ~/Projects` to navigate to Projects
+
+- Extracting the TarDocs.tar in the Projects folder
+
+- `tar xvvf TarDocs.tar`
+
+
 2. Command to **create** the `Javaless_Doc.tar` archive from the `TarDocs/` directory, while excluding the `TarDocs/Documents/Java` directory:
 
 3. Command to ensure `Java/` is not in the new `Javaless_Docs.tar` archive:
