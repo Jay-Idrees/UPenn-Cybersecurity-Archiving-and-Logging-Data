@@ -24,14 +24,27 @@ Save and submit the completed file for your homework submission.
 
 - Then `cd ~/Projects` to navigate to Projects
 
+- Inspecting the TarDocs.tar file. Listing the files inside the tar fileq
+
+- `tar tvvf TarDocs.tar`
+
 - Extracting the TarDocs.tar in the Projects folder
 
 - `tar xvvf TarDocs.tar`
 
+- Inspecting that Java folder is present
+
+- `ls -lat TarDocs/Documents`
+
 
 2. Command to **create** the `Javaless_Doc.tar` archive from the `TarDocs/` directory, while excluding the `TarDocs/Documents/Java` directory:
 
+- `tar  cvvWf Javaless_Doc.tar --exclude "TarDocs/Documents/Java" TarDocs` - Tested- works
+
 3. Command to ensure `Java/` is not in the new `Javaless_Docs.tar` archive:
+
+- `tar tvvf Javaless_Doc.tar | grep Java`
+
 
 **Bonus** 
 - Command to create an incremental archive called `logs_backup_tar.gz` with only changed files to `snapshot.file` for the `/var/log` directory:
@@ -40,33 +53,56 @@ Save and submit the completed file for your homework submission.
 
 - Why wouldn't you use the options `-x` and `-c` at the same with `tar`?
 
----
+- Thats because the -x flag is used for extraction while the -c flag instructs to create a tar file. Since its not possible extract and create a tar file at the same time, so naturally these flags cannot be together in a single command. 
 
 ### Step 2: Create, Manage, and Automate Cron Jobs
 
 1. Cron job for backing up the `/var/log/auth.log` file:
 
+- To add a cron job to a crontab
+- `crontab -e`
+
+- Automating the task to automate archiving of the file `/var/log/auth.log` to `/auth_backup.tgz` every Wednesday at 6 AM
+
+- `cd /`
+- `0 6 * * 3 sudo tar cvvf auth_backup.tgz var/log/auth.log` Note that here auth_backup.tgz is created in the home directory (which is the current directory that I am at and var/log/auth.log is the file I am archiving as a zipped backup in the homw directory)
+
+- `tar tvf auth_backup.tgz` To check the file contents of the new tar.tgz file
+
+
 ---
 
 ### Step 3: Write Basic Bash Scripts
 
-1. Brace expansion command to create the four subdirectories:
+1. Brace expansion command to create the four subdirectories: I have created these folders while being inside the home/sysadmin folder
+
+- `sudo mkdir -p backups/{freemen,diskuse,openlist,freedisk}`
+- `nano system.sh`
+
 
 2. Paste your `system.sh` script edits below:
 
     ```bash
     #!/bin/bash
-    [Your solution script contents here]
+    free -m > backups/freemem/free_mem.txt
+    df -BM -h > backups/diskuse/disk_usage.txt
+    lsof > backups/openlist/open_list.txt
+    df -k -BM -h | awk '{print $1,$4}' > backups/free_disk.txt
     ```
 
 3. Command to make the `system.sh` script executable:
 
+- `chmod -x system.sh` 
+
 **Optional**
 - Commands to test the script and confirm its execution:
+
+- `sudo ./system.sh`
 
 **Bonus**
 - Command to copy `system` to system-wide cron directory:
 
+- `sudo cp system.sh /etc/cron.weekly`
 ---
 
 ### Step 4. Manage Log File Sizes
